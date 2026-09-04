@@ -528,3 +528,11 @@ def evaluate_recovery_plans(disruption_id: str):
         "recommended_plan": recommended_plan["plan_id"],
         "reason": reason,
     }
+@app.post("/recovery/execute")
+def execute_recovery(disruption_id: str, plan_id: str):
+    return {
+        "status": "EXECUTED",
+        "disruption_id": disruption_id,
+        "plan_id": plan_id,
+        "message": f"Recovery plan {plan_id} executed successfully.",
+    }

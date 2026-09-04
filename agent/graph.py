@@ -30,3 +30,14 @@ builder.add_edge("execution", END)
 
 routeguard_graph = builder.compile()
 
+def analyze_disruption(disruption: dict) -> RouteGuardState:
+    state: RouteGuardState = {
+        "disruption": disruption,
+    }
+
+    state = detection_agent(state)
+    state = impact_agent(state)
+    state = recovery_planner_agent(state)
+    state = evaluator_agent(state)
+
+    return state

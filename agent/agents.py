@@ -187,13 +187,20 @@ def execution_agent(state: RouteGuardState) -> RouteGuardState:
 
     plan = state["recommendation"]["recommended_plan"]
 
+    response = requests.post(
+        f"{BACKEND_URL}/recovery/execute",
+        params={
+            "disruption_id": state["disruption"]["disruption_id"],
+            "plan_id": plan["plan_id"],
+        },
+        timeout=10,
+    )
+
+    response.raise_for_status()
+
+    execution = response.json()
+
     return {
         **state,
-        "execution_result": {
-            "status": "EXECUTED",
-            "plan_id": plan["plan_id"],
-            "vehicles": plan.get("vehicles", []),
-            "orders_recovered": plan["orders_recovered"],
-            "message": "Recovery plan executed successfully.",
-        },
+        "execution_result": execution,
     }

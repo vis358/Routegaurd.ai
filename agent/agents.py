@@ -44,6 +44,8 @@ Mention cost, delay, SLA impact, and customer impact.
 Use only numbers explicitly present in the operational impact or selected recovery plan.
 Do not claim that specific customer groups or SLA-risk groups were saved unless the data explicitly proves it.
 Do not invent or infer relationships between metrics.
+Only describe customer impact using explicit customer-impact fields provided in the data.
+Do not use affected order count, recovered order count, or vehicle status as evidence of reduced customer impact.
 """
 
     response = llm_client.chat.completions.create(

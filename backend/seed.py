@@ -1,3 +1,4 @@
+from datetime import datetime, timezone
 from database import get_connection, initialize_database
 
 
@@ -143,7 +144,7 @@ def seed_database():
             "VEHICLE_BREAKDOWN",
             "V102",
             "Jubilee Hills",
-            "14:32",
+            datetime.now(timezone.utc).isoformat(),
             "CRITICAL",
             "ACTIVE",
         ),

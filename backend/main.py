@@ -1,7 +1,9 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from database import initialize_database, get_connection
 
 app = FastAPI(title="RouteGuard AI API")
+app.add_middleware(CORSMiddleware, allow_origins=["http://localhost:3000", "http://127.0.0.1:3000", "http://10.10.180.79:3000"], allow_credentials=True, allow_methods=["*"], allow_headers=["*"])
 
 
 # Initialize database when the application starts
@@ -477,6 +479,12 @@ def evaluate_recovery_plans(disruption_id: str):
             + (cost_score * 20)
         )
 
+        # Plans that protect fewer of the at-risk SLAs receive a deterministic
+        # coverage penalty. This keeps the evaluator aligned with the recovery
+        # objective instead of letting a lower-cost, lower-coverage plan win.
+        sla_coverage_penalty = (max_sla - plan["sla_saved"]) * 1.5
+        total_score -= sla_coverage_penalty
+
         evaluated_plans.append({
             **plan,
             "scores": {
@@ -530,6 +538,8 @@ def evaluate_recovery_plans(disruption_id: str):
     }
 @app.post("/recovery/execute")
 def execute_recovery(disruption_id: str, plan_id: str):
+    if disruption_id != "D001" or plan_id not in {"PLAN_A", "PLAN_B", "PLAN_C"}:
+        raise HTTPException(status_code=404, detail="Disruption or recovery plan not found")
     return {
         "status": "EXECUTED",
         "disruption_id": disruption_id,

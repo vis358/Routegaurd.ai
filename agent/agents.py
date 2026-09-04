@@ -60,20 +60,17 @@ Do not invent or infer relationships between metrics.
     return response.choices[0].message.content.strip()
 
 def detection_agent(state: RouteGuardState) -> RouteGuardState:
-    """Detect and register a vehicle breakdown."""
-
     disruption = state["disruption"]
 
     if disruption["type"] != "VEHICLE_BREAKDOWN":
         return state
 
-    affected_orders = get_affected_orders(
-        disruption["vehicle_id"]
-    )
-
     return {
         **state,
-        "affected_orders": affected_orders,
+        "disruption": {
+            **disruption,
+            "status": "DETECTED",
+        },
     }
 
 from agent.tools import build_impact_summary

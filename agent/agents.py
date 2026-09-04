@@ -177,8 +177,6 @@ def approval_agent(state: RouteGuardState) -> RouteGuardState:
     }
 
 def execution_agent(state: RouteGuardState) -> RouteGuardState:
-    """Execute the approved recovery plan."""
-
     if not state.get("approval", False):
         return {
             **state,
@@ -194,8 +192,8 @@ def execution_agent(state: RouteGuardState) -> RouteGuardState:
         **state,
         "execution_result": {
             "status": "EXECUTED",
-            "plan": plan["plan"],
-            "courier_id": plan.get("courier_id"),
+            "plan_id": plan["plan_id"],
+            "vehicles": plan.get("vehicles", []),
             "orders_recovered": plan["orders_recovered"],
             "message": "Recovery plan executed successfully.",
         },

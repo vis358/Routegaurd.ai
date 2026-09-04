@@ -13,3 +13,7 @@ backend/*.db
 # Node
 frontend/node_modules/
 frontend/.next/
+
+agent/__pycache__/
+
+.venv/
